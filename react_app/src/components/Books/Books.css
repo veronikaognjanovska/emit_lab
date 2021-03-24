@@ -1,0 +1,41 @@
+/**
+Border Bottom
+*/
+.react-pagination-js-border-bottom {
+    list-style: none;
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+    list-style: none;
+    font-size: .875em;
+    font-family: inherit;
+    line-height: 2em;
+}
+
+.react-pagination-js-border-bottom li {
+    display: inline-block;
+    padding: 0px 1px;
+    margin: 0px 9px;
+    text-decoration: none;
+    cursor: pointer;
+    color: #717171;
+}
+
+.react-pagination-js-border-bottom .active {
+    display: inline-block;
+    padding: 0px 1px;
+    margin: 0px 9px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-bottom: 1px solid #0088cc;
+    color: #0088cc
+}
+
+.react-pagination-js-border-bottom li:hover {
+    font-weight: bold;
+    border-bottom: 1px solid #0088cc;
+}
+
+.react-pagination-js-border-bottom li a:focus {
+    outline: none;
+}
