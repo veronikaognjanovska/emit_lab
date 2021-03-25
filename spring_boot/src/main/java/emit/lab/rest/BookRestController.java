@@ -15,6 +15,12 @@ public class BookRestController {
 
     @GetMapping
     private List<String> findAllBooks() {
+        System.out.println("PROBA---------------------------");
+        System.out.println("PROBA---------------------------");
+        System.out.println("PROBA---------------------------");
+        System.out.println("PROBA---------------------------");
+        System.out.println("PROBA---------------------------");
+        System.out.println("PROBA---------------------------");
         return new LinkedList<String>(Arrays.asList("proba1","proba2","proba3","proba4"));
     }
 

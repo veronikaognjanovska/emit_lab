@@ -98,7 +98,7 @@ class BooksList extends React.Component {
         // this.props.
         return books.map((term, index) => {
             return (
-                <BookComponent term={term} onDelete={this.handleOnDelete} onEdit={this.props.onEdit}/>
+                <BookComponent  key={index} term={term} onDelete={this.handleOnDelete} onEdit={this.props.onEdit}/>
             );
         }).filter((product, index) => {
             return index >= offset && index < nextPageOffset;
