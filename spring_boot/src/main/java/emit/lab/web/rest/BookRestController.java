@@ -1,6 +1,7 @@
-package emit.lab.rest;
+package emit.lab.web.rest;
 
-import org.springframework.http.ResponseEntity;
+import emit.lab.models.enumerations.CategoryType;
+import emit.lab.service.BookService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -12,9 +13,16 @@ import java.util.List;
 @RequestMapping("/api/books")
 public class BookRestController {
 
+    private final BookService bookService;
+
+    public BookRestController(BookService bookService) {
+        this.bookService = bookService;
+    }
+
 
     @GetMapping
     private List<String> findAllBooks() {
+        this.bookService.save("book",2l, CategoryType.DRAMA,5);
         System.out.println("PROBA---------------------------");
         System.out.println("PROBA---------------------------");
         System.out.println("PROBA---------------------------");

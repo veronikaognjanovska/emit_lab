@@ -1,10 +1,13 @@
 package emit.lab.models;
 
 import emit.lab.models.enumerations.CategoryType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -25,10 +28,14 @@ public class Book {
 
     private Integer availableCopies;
 
+    @OneToMany
+    private Set<BookPrint> bookPrintList;
+
     public Book(String name, CategoryType category, Author author, Integer availableCopies) {
         this.name = name;
         this.category = category;
         this.author = author;
         this.availableCopies = availableCopies;
+        this.bookPrintList = new HashSet<>();
     }
 }
