@@ -1,7 +1,7 @@
 import './App.css';
 import React, {Component} from "react";
 import Header from '../Header/Header';
-import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom'
+import {BrowserRouter as Router, Redirect, Route} from 'react-router-dom'
 import LibraryService from "../../Service/LibraryService";
 import BooksList from "../Books/BooksList";
 
@@ -19,13 +19,6 @@ class App extends Component {
 
     render() {
         return (
-            // <Router>
-            //     <Header/>
-            //     <div>
-            //         HELLO
-            //     </div>
-            // </Router>
-
             <Router>
                 <Header/>
                 <main>
@@ -52,7 +45,6 @@ class App extends Component {
                     </div>
                 </main>
             </Router>
-
         );
     }
 
@@ -65,7 +57,6 @@ class App extends Component {
     loadBooks = () => {
         LibraryService.fetchBooks()
             .then((data) => {
-                console.log('----------------------')
                 this.setState({
                     books: data.data
                 })

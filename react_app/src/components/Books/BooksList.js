@@ -9,11 +9,6 @@ class BooksList extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log('----------get books api------------')
-        console.log(props)
-        console.log('----------------------')
-
-
         this.state = {
             page: 0,
             size: 2
@@ -23,8 +18,7 @@ class BooksList extends React.Component {
     render() {
         const offset = this.state.size * this.state.page;
         const nextPageOffset = offset + this.state.size;
-        // const pageCount = Math.ceil(this.props.books.length / this.state.size);
-        const pageCount = Math.ceil(10 / this.state.size);
+        const pageCount = Math.ceil(this.props.books.length / this.state.size);
         const bookList = this.getBooksPage(offset, nextPageOffset);
 
         return (
@@ -82,23 +76,9 @@ class BooksList extends React.Component {
     }
 
     getBooksPage = (offset, nextPageOffset) => {
-        const books = [
-            {id: 1, name: "book1", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-            {id: 1, name: "book2", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-            {id: 1, name: "book3", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-            {id: 1, name: "book4", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-            {id: 1, name: "book5", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-            {id: 1, name: "book6", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-            {id: 1, name: "book7", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-            {id: 1, name: "book8", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-            {id: 1, name: "book9", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-            {id: 1, name: "book10", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5}
-        ];
-
-        // this.props.
-        return books.map((term, index) => {
+        return this.props.books.map((term, index) => {
             return (
-                <BookComponent  key={index} term={term} onDelete={this.handleOnDelete} onEdit={this.props.onEdit}/>
+                <BookComponent key={index} term={term} onDelete={this.handleOnDelete} onEdit={this.props.onEdit}/>
             );
         }).filter((product, index) => {
             return index >= offset && index < nextPageOffset;

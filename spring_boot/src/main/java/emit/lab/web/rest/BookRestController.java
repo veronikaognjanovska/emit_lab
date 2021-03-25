@@ -1,11 +1,13 @@
 package emit.lab.web.rest;
 
+import emit.lab.models.Book;
 import emit.lab.models.enumerations.CategoryType;
 import emit.lab.service.BookService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -21,17 +23,10 @@ public class BookRestController {
 
 
     @GetMapping
-    private List<String> findAllBooks() {
-        this.bookService.save("book",2l, CategoryType.DRAMA,5);
-        System.out.println("PROBA---------------------------");
-        System.out.println("PROBA---------------------------");
-        System.out.println("PROBA---------------------------");
-        System.out.println("PROBA---------------------------");
-        System.out.println("PROBA---------------------------");
-        System.out.println("PROBA---------------------------");
-        return new LinkedList<String>(Arrays.asList("proba1","proba2","proba3","proba4"));
+    private List<Book> findAllBooks() {
+//        this.bookService.save("book44", 2l, CategoryType.DRAMA, 5);
+        return this.bookService.listBooks();
     }
-
 
 
 }

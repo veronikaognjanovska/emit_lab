@@ -5,15 +5,15 @@ import emit.lab.models.Book;
 import emit.lab.models.BookPrint;
 import emit.lab.models.enumerations.CategoryType;
 import emit.lab.models.exceptions.AlreadyExistsException;
+import emit.lab.models.exceptions.ArgumentsNotAllowedException;
+import emit.lab.models.exceptions.CanNotCompleteActionException;
 import emit.lab.models.exceptions.NotFound;
 import emit.lab.repository.BookPrintRepository;
 import emit.lab.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class BookService {
@@ -30,6 +30,12 @@ public class BookService {
 
     public List<Book> listBooks() {
         return this.bookRepository.findAll();
+    }
+
+    public Book findBook(Long id) throws NotFound {
+        return this.bookRepository.findById(id)
+                .orElseThrow(() -> new NotFound(String.format("Book with id: %d not found!", id)));
+
     }
 
     public List<BookPrint> listBookPrintsByBook(Book book) {
@@ -51,45 +57,60 @@ public class BookService {
 //- Да изменува одреден запис за книга
 //- Да обележи одредена книга како изнајмена
 
-//    public void takeACopy(){
-//        if(availableCopies==0){
-//            throw
-//        }
-//        --availableCopies;
-//    }
-
     @Transactional
     public Book save(String name, Long author_id, CategoryType categoryType, Integer availableCopies)
             throws IllegalArgumentException, NotFound {
 
         this.checkParameter(name, author_id, availableCopies);
         Author author = this.authorService.findAuthorById(author_id);
-        this.checkBookExistence(name,author,categoryType);
+        this.checkBookExistence(name, author, categoryType);
 
         Book book = new Book(name, categoryType, author, availableCopies);
         book = this.bookRepository.save(book);
 
-        Set<BookPrint> bookPrintSet = new HashSet<BookPrint>();
-        BookPrint bookPrint = null;
-        for (int i = 0; i < availableCopies; i++) {
-            bookPrint = this.bookPrintRepository.save(new BookPrint(book));
-            bookPrintSet.add(bookPrint);
-        }
-        book.setBookPrintList(bookPrintSet);
+        this.addBookPrintForBook(book, availableCopies);
+        return book;
+    }
+
+    @Transactional
+    public Book addNewCopiesForBook(Long book_id, Integer n)
+            throws IllegalArgumentException, NotFound, CanNotCompleteActionException {
+
+        Book book = this.findBook(book_id);
+        this.addBookPrintForBook(book, n);
+        this.setAvailableCopies(book, n);
+
         return this.bookRepository.save(book);
     }
 
-    private void checkParameter(String name, Long author_id, Integer availableCopies) throws IllegalArgumentException{
-        if (name == null || name.isEmpty() || availableCopies == null || availableCopies < 0 ||
-                author_id == null || author_id < 0) {
-            throw new IllegalArgumentException();
+
+    // helper methods
+
+    private void addBookPrintForBook(Book book, Integer n) {
+        for (int i = 0; i < n; i++) {
+            this.bookPrintRepository.save(new BookPrint(book));
         }
     }
 
-    private void checkBookExistence(String name,  Author author, CategoryType categoryType) throws AlreadyExistsException{
-        if (this.searchBooks(name, author, categoryType).size() > 0) {
-            throw new AlreadyExistsException(String.format("Book already exists!"));
+    private void checkParameter(String name, Long author_id, Integer availableCopies) throws IllegalArgumentException {
+        if (name == null || name.isEmpty() || availableCopies == null || availableCopies < 0 ||
+                author_id == null || author_id < 0) {
+            throw new ArgumentsNotAllowedException();
         }
+    }
+
+    private void checkBookExistence(String name, Author author, CategoryType categoryType) throws AlreadyExistsException {
+        if (this.searchBooks(name, author, categoryType).size() > 0) {
+            throw new AlreadyExistsException("Book already exists!");
+        }
+    }
+
+    private void setAvailableCopies(Book book, Integer n) throws CanNotCompleteActionException {
+        Integer newNumber = book.getAvailableCopies() + n;
+        if (newNumber < 0) {
+            throw new CanNotCompleteActionException("Book available copies number not allowed");
+        }
+        book.setAvailableCopies(newNumber);
     }
 
 }
