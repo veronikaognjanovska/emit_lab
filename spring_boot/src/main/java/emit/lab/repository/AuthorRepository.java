@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
-    List<Author> findAllByNameLikeAndSurnameLike(String name, String surname);
+    List<Author> findAllByNameLikeAndSurnameLikeOrderById(String name, String surname);
 
-    List<Author> findAllByNameLikeOrSurnameLike(String name, String surname);
+    List<Author> findAllByNameLikeOrSurnameLikeOrderById(String name, String surname);
 }

@@ -1,6 +1,22 @@
 /**
 Border Bottom
 */
+.row {
+    position: relative;
+}
+
+form {
+    max-width: 500px;
+    margin: auto;
+}
+
+.button-right {
+    position: absolute;
+    top: 34px;
+    right: 0;
+    z-index: 1001;
+}
+
 .react-pagination-js-border-bottom {
     list-style: none;
     padding: 0 0 0 0;

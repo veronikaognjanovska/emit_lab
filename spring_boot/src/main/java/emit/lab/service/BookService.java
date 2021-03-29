@@ -44,22 +44,23 @@ public class BookService {
         return this.bookPrintRepository.findById(id);
     }
 
-    public List<BookPrint> listBookPrintsByBook(Book book) {
-        return this.bookPrintRepository.findByBook(book);
+    public List<BookPrint> listBookPrintsByBook(Long id) {
+        Book book = this.findBook(id).orElseThrow(() -> new NotFound(String.format("Book with id: %d not found!", id)));
+        return this.bookPrintRepository.findByBookOrderById(book);
     }
 
     public List<Book> searchBooksByName(String name) {
         name = "%" + name + "%";
-        return this.bookRepository.findAllByNameLike(name);
+        return this.bookRepository.findAllByNameLikeOrderById(name);
     }
 
     public List<Book> searchBooks(String name, Author author, CategoryType categoryType) {
         name = "%" + name + "%";
-        return this.bookRepository.findAllByNameLikeAndAuthorAndCategory(name, author, categoryType);
+        return this.bookRepository.findAllByNameLikeAndAuthorAndCategoryOrderById(name, author, categoryType);
     }
 
     public Book searchBooksByName(Long id) {
-        return this.bookRepository.findById(id).orElseThrow();
+        return this.bookRepository.findById(id).orElseThrow(() -> new NotFound(String.format("Book with id: %d not found!", id)));
     }
 
 
@@ -69,7 +70,7 @@ public class BookService {
             throws IllegalArgumentException, NotFound {
 
         this.checkParameter(bookDto.getName(), bookDto.getAuthor(), bookDto.getAvailableCopies());
-        Author author = this.authorService.findAuthorById(bookDto.getAuthor());
+        Author author = this.authorService.findAuthorById(bookDto.getAuthor()).orElseThrow(() -> new NotFound(String.format("Author with id: %d not found!", bookDto.getAuthor())));
         this.checkBookExistence(bookDto.getName(), author, bookDto.getCategory());
 
         Book book = new Book(bookDto.getName(), bookDto.getCategory(), author, bookDto.getAvailableCopies());
@@ -80,20 +81,20 @@ public class BookService {
     }
 
     @Transactional
-    public Book addNewCopiesForBook(Long book_id, Integer n)
+    public Optional<Book> addNewCopiesForBook(Long book_id, Integer n)
             throws IllegalArgumentException, NotFound, CanNotCompleteActionException {
 
         Book book = this.findBook(book_id).orElseThrow(() -> new NotFound(String.format("Book with id: %d not found!", book_id)));
         this.addBookPrintForBook(book, n);
         this.setAvailableCopies(book, n);
 
-        return this.bookRepository.save(book);
+        return Optional.of(this.bookRepository.save(book));
     }
 
     //- Да брише книги кои повеќе не се во добра состојба и нема да се изнајмуваат
     @Transactional
     public void deleteBookPrint(Long print_id) throws NotFound {
-        BookPrint bookPrint = this.findBookPrint(print_id).orElseThrow(() -> new NotFound(String.format("BookPrint with id: %d not found!", print_id)));;
+        BookPrint bookPrint = this.findBookPrint(print_id).orElseThrow(() -> new NotFound(String.format("BookPrint with id: %d not found!", print_id)));
         this.bookPrintRepository.delete(bookPrint);
         Book book = this.findBook(bookPrint.getBook().getId()).orElseThrow(() -> new NotFound(String.format("Book with id: %d not found!", bookPrint.getBook().getId())));
         this.setAvailableCopies(book, -1);
@@ -104,7 +105,7 @@ public class BookService {
         Book book = this.findBook(book_id).orElseThrow(() -> new NotFound(String.format("Book with id: %d not found!", book_id)));
         book.setName(bookDto.getName());
         book.setCategory(bookDto.getCategory());
-        Author author = this.authorService.findAuthorById(bookDto.getAuthor());
+        Author author = this.authorService.findAuthorById(bookDto.getAuthor()).orElseThrow(() -> new NotFound(String.format("Author with id: %d not found!", bookDto.getAuthor())));
         book.setAuthor(author);
         // you can not change/edit availableCopies
         return Optional.of(this.bookRepository.save(book));
@@ -112,25 +113,31 @@ public class BookService {
 
     //- Да обележи одредена книга како изнајмена
     @Transactional
-    public BookPrint markBookPrintAsTaken(Long book_id)
+    public Optional<BookPrint> markBookPrintAsTaken(Long print_id)
             throws IllegalArgumentException, NotFound, CanNotCompleteActionException {
 
-        Book book = this.findBook(book_id).orElseThrow(() -> new NotFound(String.format("Book with id: %d not found!", book_id)));
-        if (book.getAvailableCopies() <= 0) {
-            throw new CanNotCompleteActionException("There are no available copies to mark as taken");
-        }
+        BookPrint bookPrint = this.bookPrintRepository.findById(print_id).orElseThrow(() -> new NotFound(String.format("BookPrint with id: %d not found!", print_id)));
 
-        List<BookPrint> bookPrintList = this.bookPrintRepository.findBookPrintsByBookAndStatus(book, BookPrintStatus.AVAILABLE);
-        if (bookPrintList.size() <= 0) {
-            throw new CanNotCompleteActionException("There are no available copies to mark as taken");
-        }
-        BookPrint bookPrint = bookPrintList.get(0);
         bookPrint.setStatus(BookPrintStatus.TAKEN);
-
+        Book book = bookPrint.getBook();
         this.setAvailableCopies(book, -1);
         this.bookRepository.save(book);
 
-        return this.bookPrintRepository.save(bookPrint);
+        return Optional.of(this.bookPrintRepository.save(bookPrint));
+    }
+
+    @Transactional
+    public Optional<BookPrint> markBookPrintAsReturned(Long print_id)
+            throws IllegalArgumentException, NotFound, CanNotCompleteActionException {
+
+        BookPrint bookPrint = this.bookPrintRepository.findById(print_id).orElseThrow(() -> new NotFound(String.format("BookPrint with id: %d not found!", print_id)));
+
+        bookPrint.setStatus(BookPrintStatus.AVAILABLE);
+        Book book = bookPrint.getBook();
+        this.setAvailableCopies(book, +1);
+        this.bookRepository.save(book);
+
+        return Optional.of(this.bookPrintRepository.save(bookPrint));
     }
 
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CountryRepository extends JpaRepository<Country, Long> {
-    List<Country> findAllByNameLikeAndContinentLike(String name, String continent);
+    List<Country> findAllByNameLikeAndContinentLikeOrderById(String name, String continent);
 
-    List<Country> findAllByNameLikeOrContinentLike(String name, String continent);
+    List<Country> findAllByNameLikeOrContinentLikeOrderById(String name, String continent);
 }

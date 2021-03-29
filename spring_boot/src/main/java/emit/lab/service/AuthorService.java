@@ -1,11 +1,11 @@
 package emit.lab.service;
 
 import emit.lab.models.Author;
-import emit.lab.models.exceptions.NotFound;
 import emit.lab.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorService {
@@ -20,19 +20,18 @@ public class AuthorService {
         return this.authorRepository.findAll();
     }
 
-    public Author findAuthorById(Long id) throws NotFound {
-        return this.authorRepository.findById(id)
-                .orElseThrow(() -> new NotFound(String.format("Author with id: %d not found!",id)));
+    public Optional<Author> findAuthorById(Long id) {
+        return this.authorRepository.findById(id);
     }
 
     public List<Author> searchAuthorsByNameAndSurname(String name, String surname) {
         name = "%" + name + "%";
         surname = "%" + surname + "%";
-        return this.authorRepository.findAllByNameLikeAndSurnameLike(name, surname);
+        return this.authorRepository.findAllByNameLikeAndSurnameLikeOrderById(name, surname);
     }
 
     public List<Author> searchAuthors(String searchText) {
         searchText = "%" + searchText + "%";
-        return this.authorRepository.findAllByNameLikeOrSurnameLike(searchText, searchText);
+        return this.authorRepository.findAllByNameLikeOrSurnameLikeOrderById(searchText, searchText);
     }
 }

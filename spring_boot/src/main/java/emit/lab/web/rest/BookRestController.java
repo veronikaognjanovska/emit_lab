@@ -8,7 +8,9 @@ import emit.lab.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -24,28 +26,35 @@ public class BookRestController {
 
     @GetMapping
     private List<Book> findAllBooks() {
-//        this.bookService.save("book44", 2l, CategoryType.DRAMA, 5);
-
-//        Book b1 = this.bookService.editBook(2l,new BookDto("ppp", CategoryType.THRILER,2l,6));
-//        System.out.println(b1);
-//        this.bookService.deleteBookPrint(1l);
-//        System.out.println("deleted");
-//        BookPrint bp1 = this.bookService.markBookPrintAsTaken(1l);
-//        BookPrint bp2 = this.bookService.markBookPrintAsTaken(1l);
-//        BookPrint bp3 = this.bookService.markBookPrintAsTaken(1l);
-//        System.out.println(bp1);
-//        System.out.println(bp2);
-//        System.out.println(bp3);
-
         return this.bookService.listBooks();
     }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<String>> getCategories() {
+        System.out.println("-----------------------findBook-------------------------");
+
+        return ResponseEntity.ok().body(Arrays.stream(CategoryType.values()).map(Enum::toString)
+                .collect(Collectors.toList()));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Book> findBook(@PathVariable Long id) {
         System.out.println("-----------------------findBook-------------------------");
 
         return this.bookService.findBook(id)
-                .map(book -> ResponseEntity.ok().body(book))
+                .map(book -> {
+                    System.out.println("-----------------------findBook-------------------------");
+                    System.out.println(book);
+                    return ResponseEntity.ok().body(book);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/print/{id}")
+    public List<BookPrint> findBookPrints(@PathVariable Long id) {
+        System.out.println("-----------------------findBookPrints-------------------------");
+
+        return this.bookService.listBookPrintsByBook(id);
     }
 
     @PostMapping("/add")
@@ -54,12 +63,12 @@ public class BookRestController {
         return this.bookService.save(bookDto)
                 .map(product -> ResponseEntity.ok().body(product))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
+
     }
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<Book> editBook(@PathVariable Long id, @RequestBody BookDto productDto) {
         System.out.println("-----------------------editBook-------------------------");
-
         return this.bookService.editBook(id, productDto)
                 .map(product -> ResponseEntity.ok().body(product))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -69,8 +78,33 @@ public class BookRestController {
     public ResponseEntity deleteBookPrint(@PathVariable Long id) {
         System.out.println("-----------------------deleteBookPrint-------------------------");
         this.bookService.deleteBookPrint(id);
-        if(this.bookService.findBookPrint(id).isEmpty()) return ResponseEntity.ok().build();
+        if (this.bookService.findBookPrint(id).isEmpty()) return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
+
+    }
+
+    @PutMapping("/markAsTaken/{id}")
+    public ResponseEntity<BookPrint> markAsTakenBookPrint(@PathVariable Long id) {
+        System.out.println("-----------------------markAsTakenBookPrint-------------------------");
+        return this.bookService.markBookPrintAsTaken(id)
+                .map(bookPrint -> ResponseEntity.ok().body(bookPrint))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PutMapping("/markAsReturned/{id}")
+    public ResponseEntity<BookPrint> markAsReturnedBookPrint(@PathVariable Long id) {
+        System.out.println("-----------------------markAsReturned-------------------------");
+        return this.bookService.markBookPrintAsReturned(id)
+                .map(bookPrint -> ResponseEntity.ok().body(bookPrint))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PutMapping("/addNewBookPrint/{id}")
+    public ResponseEntity<Book> addNewBookPrint(@PathVariable Long id) {
+        System.out.println("-----------------------addNewBookPrint-------------------------");
+        return this.bookService.addNewCopiesForBook(id, 1)
+                .map(book -> ResponseEntity.ok().body(book))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
 

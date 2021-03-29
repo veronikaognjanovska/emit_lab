@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface BookPrintRepository extends JpaRepository<BookPrint, Long> {
-    List<BookPrint> findByBook(Book book);
+    List<BookPrint> findByBookOrderById(Book book);
 
-    List<BookPrint> findBookPrintsByBookAndStatus(Book book, BookPrintStatus status);
+    List<BookPrint> findBookPrintsByBookAndStatusOrderById(Book book, BookPrintStatus status);
 }

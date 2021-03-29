@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate'
 import BookComponent from "./BookComponent/BookComponent";
-// import ProductTerm from '../ProductTerm/productTerm';
-// import {Link} from 'react-router-dom';
 import './Books.css';
 import {Link} from "react-router-dom";
 
@@ -12,7 +10,7 @@ class BooksList extends React.Component {
         super(props);
         this.state = {
             page: 0,
-            size: 2
+            size: 5
         }
     }
 
@@ -20,13 +18,12 @@ class BooksList extends React.Component {
         const offset = this.state.size * this.state.page;
         const nextPageOffset = offset + this.state.size;
         const pageCount = Math.ceil(this.props.books.length / this.state.size);
-        // const pageCount = Math.ceil(10/ this.state.size);
         const bookList = this.getBooksPage(offset, nextPageOffset);
 
         return (
             <div className={"row"}>
-                <div className={"btn btn-success"}>
-                    <Link className={"btn btn-outline-light"} to={"/books/add"}>Add New book</Link>
+                <div className={"button-right"}>
+                    <Link className={"btn btn-outline-success"} to={"/books/add"}>Add New Book</Link>
                 </div>
                 <div className={"col-sm-12 m-4"}>
                     <h1>List of Books</h1>
@@ -73,6 +70,7 @@ class BooksList extends React.Component {
         )
     }
 
+
     handlePageClick = (data) => {
         let selected = data.selected;
         this.setState({
@@ -81,45 +79,13 @@ class BooksList extends React.Component {
     }
 
     getBooksPage = (offset, nextPageOffset) => {
-        // const books = [
-        //     {id: 1, name: "book1", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-        //     {id: 1, name: "book2", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-        //     {id: 1, name: "book3", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-        //     {id: 1, name: "book4", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-        //     {id: 1, name: "book5", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-        //     {id: 1, name: "book6", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-        //     {id: 1, name: "book7", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-        //     {id: 1, name: "book8", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-        //     {id: 1, name: "book9", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5},
-        //     {id: 1, name: "book10", category: "NOVEL", author: {name: "aa", surname: "aba"}, availableCopies: 5}
-        // ];
-        // this.props.
         return this.props.books.map((term, index) => {
             return (
-                <BookComponent key={index} term={term} onDelete={this.props.onDelete} onEdit={this.props.onEdit}/>
+                <BookComponent key={index} term={term} onEdit={this.props.onEdit} onView={this.props.onView}/>
             );
-        }).filter((product, index) => {
+        }).filter((book, index) => {
             return index >= offset && index < nextPageOffset;
         })
-    }
-
-    handleOnDelete = (data) => {
-        console.log('delete clicked')
-        console.log(data)
-        // deleteProduct = (id) => {
-        //     EShopService.deleteProduct(id)
-        //         .then(() => {
-        //             this.loadProducts();
-        //         });
-        // }
-        //
-
-        // editProduct = (id, name, price, quantity, category, manufacturer) => {
-        //     EShopService.editProduct(id, name, price, quantity, category, manufacturer)
-        //         .then(() => {
-        //             this.loadProducts();
-        //         });
-        // }
     }
 
 }

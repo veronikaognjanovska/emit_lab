@@ -13,8 +13,8 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Book, Long> {
     Optional<Book> findByName(String name);
 
-    List<Book> findAllByNameLike(String text);
+    List<Book> findAllByNameLikeOrderById(String text);
 
-    List<Book> findAllByNameLikeAndAuthorAndCategory(String name, Author author, CategoryType categoryType);
+    List<Book> findAllByNameLikeAndAuthorAndCategoryOrderById(String name, Author author, CategoryType categoryType);
 
 }

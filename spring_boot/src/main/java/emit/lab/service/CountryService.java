@@ -22,12 +22,12 @@ public class CountryService {
     public List<Country> searchCountriesByNameAndContinent(String name, String continent) {
         name = "%" + name + "%";
         continent = "%" + continent + "%";
-        return this.countryRepository.findAllByNameLikeAndContinentLike(name, continent);
+        return this.countryRepository.findAllByNameLikeAndContinentLikeOrderById(name, continent);
     }
 
     public List<Country> searchCountries(String searchText) {
         searchText = "%" + searchText + "%";
-        return this.countryRepository.findAllByNameLikeOrContinentLike(searchText, searchText);
+        return this.countryRepository.findAllByNameLikeOrContinentLikeOrderById(searchText, searchText);
     }
 
 }
