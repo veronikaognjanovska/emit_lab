@@ -1,9 +1,13 @@
 import './App.css';
 import React, {Component} from "react";
 import Header from '../Header/Header';
-import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom'
+import {BrowserRouter as Router, Redirect, Route} from 'react-router-dom'
 import LibraryService from "../../Service/LibraryService";
 import BooksList from "../Books/BooksList";
+import BookAdd from '../Books/BookAdd/BookAdd';
+import BookEdit from '../Books/BookEdit/BookEdit';
+import BookView from "../Books/BookView/BookView";
+import Categories from "../Categories/Categories";
 
 class App extends Component {
 
@@ -11,114 +15,161 @@ class App extends Component {
         super(props);
         this.state = {
             books: [],
-            // products: [],
-            // categories: [],
-            // selectedProduct: {}
+            authors: [],
+            bookPrints: [],
+            selectedBook: {}
         }
     }
 
     render() {
         return (
-            // <Router>
-            //     <Header/>
-            //     <div>
-            //         HELLO
-            //     </div>
-            // </Router>
-
             <Router>
                 <Header/>
                 <main>
                     <div className={"container pt-4"}>
-                        <Route path={"/books"} exact render={() =>
-                            <BooksList books={this.state.books}/>
+                        <Route path={"/categories"} exact render={() =>
+                            <Categories
+                                categories={this.state.categories}
+                            />
                         }/>
-                        {/*<Route path={"/categories"} exact render={() =>*/}
-                        {/*    <Categories categories={this.state.categories}/>}/>*/}
-                        {/*<Route path={"/products/add"} exact render={() =>*/}
-                        {/*    <ProductAdd categories={this.state.categories}*/}
-                        {/*                manufacturers={this.state.manufacturers}*/}
-                        {/*                onAddProduct={this.addProduct}/>}/>*/}
-                        {/*<Route path={"/products/edit/:id"} exact render={() =>*/}
-                        {/*    <ProductEdit categories={this.state.categories}*/}
-                        {/*                 manufacturers={this.state.manufacturers}*/}
-                        {/*                 onEditProduct={this.editProduct}*/}
-                        {/*                 product={this.state.selectedProduct}/>}/>*/}
-                        {/*<Route path={"/products"} exact render={() =>*/}
-                        {/*    <Products products={this.state.products}*/}
-                        {/*              onDelete={this.deleteProduct}*/}
-                        {/*              onEdit={this.getProduct}/>}/>*/}
+                        <Route path={"/books/add"} exact render={() =>
+                            <BookAdd
+                                categories={this.state.categories}
+                                authors={this.state.authors}
+                                addBookPrint={this.addBookPrint}/>
+                        }/>
+                        <Route path={"/books/edit/:id"} exact render={() =>
+                            <BookEdit
+                                categories={this.state.categories}
+                                authors={this.state.authors}
+                                onEditBook={this.editBook}
+                                book={this.state.selectedBook}/>
+                        }/>
+                        <Route path={"/books/view/:id"} exact render={() =>
+                            <BookView
+                                book={this.state.selectedBook}
+                                bookPrints={this.state.bookPrints}
+                                onMarkAsTaken={this.onMarkAsTaken}
+                                onMarkAsReturned={this.onMarkAsReturned}
+                                onDeleteBookPrint={this.deleteBookPrint}
+                                addNewBookPrint={this.addNewBookPrint}
+                            />
+                        }/>
+                        <Route path={"/books"} exact render={() =>
+                            <BooksList books={this.state.books}
+                                       onEdit={this.getBook}
+                                       onView={this.onViewGet}/>
+                        }/>
                         <Redirect to={"/books"}/>
                     </div>
                 </main>
             </Router>
-
         );
     }
 
     componentDidMount() {
         this.loadBooks();
-        // this.loadCategories();
-        // this.loadProducts();
+        this.loadCategories();
+        this.loadAuthors();
     }
 
     loadBooks = () => {
         LibraryService.fetchBooks()
             .then((data) => {
-                console.log('----------------------')
                 this.setState({
                     books: data.data
                 })
             });
     }
-    //
-    // loadProducts = () => {
-    //     EShopService.fetchProducts()
-    //         .then((data) => {
-    //             this.setState({
-    //                 products: data.data
-    //             })
-    //         });
-    // }
-    //
-    // loadCategories = () => {
-    //     EShopService.fetchCategories()
-    //         .then((data) => {
-    //             this.setState({
-    //                 categories: data.data
-    //             })
-    //         });
-    // }
-    //
-    // deleteProduct = (id) => {
-    //     EShopService.deleteProduct(id)
-    //         .then(() => {
-    //             this.loadProducts();
-    //         });
-    // }
-    //
-    // addProduct = (name, price, quantity, category, manufacturer) => {
-    //     EShopService.addProduct(name, price, quantity, category, manufacturer)
-    //         .then(() => {
-    //             this.loadProducts();
-    //         });
-    // }
-    //
-    // getProduct = (id) => {
-    //     EShopService.getProduct(id)
-    //         .then((data) => {
-    //             this.setState({
-    //                 selectedProduct: data.data
-    //             })
-    //         })
-    // }
-    //
-    // editProduct = (id, name, price, quantity, category, manufacturer) => {
-    //     EShopService.editProduct(id, name, price, quantity, category, manufacturer)
-    //         .then(() => {
-    //             this.loadProducts();
-    //         });
-    // }
+
+    loadCategories = () => {
+        LibraryService.fetchCategories()
+            .then((data) => {
+                this.setState({
+                    categories: data.data
+                })
+            });
+    }
+
+    loadAuthors = () => {
+        LibraryService.fetchAuthors()
+            .then((data) => {
+                this.setState({
+                    authors: data.data
+                })
+            });
+    }
+
+    onViewGet = (id) => {
+        this.getBook(id);
+        this.getBookPrints(id);
+    }
+
+    getBook = (id) => {
+        LibraryService.getBook(id)
+            .then((data) => {
+                this.setState({
+                    selectedBook: data.data
+                })
+            })
+    }
+
+    getBookPrints = (id) => {
+        LibraryService.getBookPrints(id)
+            .then((data) => {
+                this.setState({
+                    bookPrints: data.data
+                })
+            })
+    }
+
+    addBookPrint = (name, price, quantity, category, manufacturer) => {
+        LibraryService.addBookPrint(name, price, quantity, category, manufacturer)
+            .then(() => {
+                this.loadBooks();
+            });
+    }
+
+    editBook = (id, name, price, quantity, category, manufacturer) => {
+        LibraryService.editBook(id, name, price, quantity, category, manufacturer)
+            .then(() => {
+                this.loadBooks();
+            });
+    }
+
+    onMarkAsTaken = (id) => {
+        LibraryService.markAsTakenBookPrint(id)
+            .then(() => {
+                this.reloadSelected();
+            });
+    }
+
+    onMarkAsReturned = (id) => {
+        LibraryService.onMarkAsReturnedBookPrint(id)
+            .then(() => {
+                this.reloadSelected();
+            });
+    }
+
+    deleteBookPrint = (id) => {
+        LibraryService.deleteBookPrint(id)
+            .then(() => {
+                this.reloadSelected();
+            });
+    }
+
+    addNewBookPrint = (id) => {
+        LibraryService.addNewBookPrint(id)
+            .then(() => {
+                this.reloadSelected();
+            });
+    }
+
+    reloadSelected() {
+        this.loadBooks();
+        this.getBook(this.state.selectedBook.id);
+        this.getBookPrints(this.state.selectedBook.id);
+    }
 }
 
 export default App;

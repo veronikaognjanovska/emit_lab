@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import './Header.css';
+
 const Header = (props) => {
     return (
         <header className={"fixed-top"}>
@@ -11,6 +12,7 @@ const Header = (props) => {
                     </div>
                     <div className={"navbar-header navbar-right"}>
                         <Link className={"btn btn-outline-light"} to={"/books"}>Books</Link>
+                        <Link className={"btn btn-outline-light ml-2"} to={"/categories"}>Categories</Link>
                     </div>
                 </div>
             </nav>

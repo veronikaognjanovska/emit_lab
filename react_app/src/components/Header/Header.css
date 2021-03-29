@@ -11,6 +11,6 @@ header span {
     color: white;
 }
 
-.btn:active, .btn:hover {
+header .btn:active, header .btn:hover {
     color: #f69d3c !important;
 }
