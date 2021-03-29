@@ -7,7 +7,7 @@ const BookComponent = (props) => {
             <td>{props.term.id}</td>
             <td>{props.term.name}</td>
             <td>{props.term.category}</td>
-            <td>{props.term.author.name+' '+props.term.author.surname}</td>
+            <td>{props.term.author}</td>
             <td>{props.term.availableCopies}</td>
             <td className={"text-right"}>
                 <a title={"Delete"} className={"btn btn-danger"}

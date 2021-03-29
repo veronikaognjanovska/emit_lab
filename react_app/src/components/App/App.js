@@ -4,6 +4,8 @@ import Header from '../Header/Header';
 import {BrowserRouter as Router, Redirect, Route} from 'react-router-dom'
 import LibraryService from "../../Service/LibraryService";
 import BooksList from "../Books/BooksList";
+import BookAdd from '../Books/BookAdd/BookAdd';
+import BookEdit from '../Books/BookEdit/BookEdit';
 
 class App extends Component {
 
@@ -13,7 +15,7 @@ class App extends Component {
             books: [],
             // products: [],
             // categories: [],
-            // selectedProduct: {}
+            selectedBook: {}
         }
     }
 
@@ -23,24 +25,26 @@ class App extends Component {
                 <Header/>
                 <main>
                     <div className={"container pt-4"}>
-                        <Route path={"/books"} exact render={() =>
-                            <BooksList books={this.state.books}/>
-                        }/>
                         {/*<Route path={"/categories"} exact render={() =>*/}
                         {/*    <Categories categories={this.state.categories}/>}/>*/}
-                        {/*<Route path={"/products/add"} exact render={() =>*/}
-                        {/*    <ProductAdd categories={this.state.categories}*/}
-                        {/*                manufacturers={this.state.manufacturers}*/}
-                        {/*                onAddProduct={this.addProduct}/>}/>*/}
-                        {/*<Route path={"/products/edit/:id"} exact render={() =>*/}
-                        {/*    <ProductEdit categories={this.state.categories}*/}
-                        {/*                 manufacturers={this.state.manufacturers}*/}
-                        {/*                 onEditProduct={this.editProduct}*/}
-                        {/*                 product={this.state.selectedProduct}/>}/>*/}
-                        {/*<Route path={"/products"} exact render={() =>*/}
-                        {/*    <Products products={this.state.products}*/}
-                        {/*              onDelete={this.deleteProduct}*/}
-                        {/*              onEdit={this.getProduct}/>}/>*/}
+                        <Route path={"/books/add"} exact render={() =>
+                            <BookAdd
+                                // categories={this.state.categories}
+                                //         manufacturers={this.state.manufacturers}
+                                        onAddBook={this.addBook}/>
+                        }/>
+                        <Route path={"/books/edit/:id"} exact render={() =>
+                            <BookEdit
+                                // categories={this.state.categories}
+                                //          manufacturers={this.state.manufacturers}
+                                         onEditBook={this.editBook}
+                                         book={this.state.selectedBook}/>
+                        }/>
+                        <Route path={"/books"} exact render={() =>
+                            <BooksList books={this.state.books}
+                                       onDelete={this.deleteBook}
+                                       onEdit={this.getBook}/>
+                        }/>
                         <Redirect to={"/books"}/>
                     </div>
                 </main>
@@ -81,35 +85,35 @@ class App extends Component {
     //         });
     // }
     //
-    // deleteProduct = (id) => {
-    //     EShopService.deleteProduct(id)
-    //         .then(() => {
-    //             this.loadProducts();
-    //         });
-    // }
-    //
-    // addProduct = (name, price, quantity, category, manufacturer) => {
-    //     EShopService.addProduct(name, price, quantity, category, manufacturer)
-    //         .then(() => {
-    //             this.loadProducts();
-    //         });
-    // }
-    //
-    // getProduct = (id) => {
-    //     EShopService.getProduct(id)
-    //         .then((data) => {
-    //             this.setState({
-    //                 selectedProduct: data.data
-    //             })
-    //         })
-    // }
-    //
-    // editProduct = (id, name, price, quantity, category, manufacturer) => {
-    //     EShopService.editProduct(id, name, price, quantity, category, manufacturer)
-    //         .then(() => {
-    //             this.loadProducts();
-    //         });
-    // }
+    deleteBook = (id) => {
+        LibraryService.deleteBook(id)
+            .then(() => {
+                this.loadBooks();
+            });
+    }
+
+    addBook = (name, price, quantity, category, manufacturer) => {
+        LibraryService.addBook(name, price, quantity, category, manufacturer)
+            .then(() => {
+                this.loadBooks();
+            });
+    }
+
+    getBook = (id) => {
+        LibraryService.getBook(id)
+            .then((data) => {
+                this.setState({
+                    selectedProduct: data.data
+                })
+            })
+    }
+
+    editBook = (id, name, price, quantity, category, manufacturer) => {
+        LibraryService.editBook(id, name, price, quantity, category, manufacturer)
+            .then(() => {
+                this.loadBooks();
+            });
+    }
 }
 
 export default App;

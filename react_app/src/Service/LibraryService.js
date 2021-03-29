@@ -7,33 +7,39 @@ const LibraryService = {
     // fetchCategories: () => {
     //     return axios.get("/categories");
     // },
-    // fetchProducts: () => {
-    //     return axios.get("/products");
+    // fetchBooks: () => {
+    //     return axios.get("/Books");
     // },
-    // deleteProduct: (id) => {
-    //     return axios.delete(`/products/delete/${id}`);
-    // },
-    // addProduct: (name, price, quantity, category, manufacturer) => {
-    //     return axios.post("/products/add", {
-    //         "name" : name,
-    //         "price" : price,
-    //         "quantity" : quantity,
-    //         "category" : category,
-    //         "manufacturer" : manufacturer
-    //     });
-    // },
-    // editProduct: (id, name, price, quantity, category, manufacturer) => {
-    //     return axios.put(`/products/edit/${id}`, {
-    //         "name" : name,
-    //         "price" : price,
-    //         "quantity" : quantity,
-    //         "category" : category,
-    //         "manufacturer" : manufacturer
-    //     });
-    // },
-    // getProduct: (id) => {
-    //     return axios.get(`/products/${id}`);
-    // }
+
+    addBook: (name, category, author, availableCopies) => {
+        console.log("addBook")
+
+        // return axios.post("/books/add", {
+        //     "name" : name,
+        //     "category" : category,
+        //     "author" : author,
+        //     "availableCopies" : availableCopies
+        // });
+    },
+    editBook: (id, name, category, author, availableCopies) => {
+        console.log("editBook")
+
+        // return axios.put(`/books/edit/${id}`, {
+        //     "name" : name,
+        //     "category" : category,
+        //     "author" : author,
+        //     "availableCopies" : availableCopies
+        // });
+    },
+    deleteBook: (id) => {
+        console.log("deleteBook")
+        // return axios.delete(`/books/delete/${id}`);
+    },
+    getBook: (id) => {
+        console.log("getBook")
+
+        // return axios.get(`/books/${id}`);
+    }
 };
 
 export default LibraryService;
