@@ -14,7 +14,7 @@ const LibraryService = {
         return axios.get("/authors");
     },
 
-    addBookPrint: (name, category, author, availableCopies) => {
+    addBook: (name, category, author, availableCopies) => {
         return axios.post("/books/add", {
             "name": name,
             "category": category,
