@@ -3,11 +3,14 @@ import React, {Component} from "react";
 import Header from '../Header/Header';
 import {BrowserRouter as Router, Redirect, Route} from 'react-router-dom'
 import LibraryService from "../../Service/LibraryService";
+import NotificationService from "../../Notifications/NotificationService";
 import BooksList from "../Books/BooksList";
 import BookAdd from '../Books/BookAdd/BookAdd';
 import BookEdit from '../Books/BookEdit/BookEdit';
 import BookView from "../Books/BookView/BookView";
 import Categories from "../Categories/Categories";
+import ReactNotification from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
 
 class App extends Component {
 
@@ -24,6 +27,7 @@ class App extends Component {
     render() {
         return (
             <Router>
+                <ReactNotification/>
                 <Header/>
                 <main>
                     <div className={"container pt-4"}>
@@ -36,7 +40,7 @@ class App extends Component {
                             <BookAdd
                                 categories={this.state.categories}
                                 authors={this.state.authors}
-                                addBookPrint={this.addBookPrint}/>
+                                addBook={this.addBook}/>
                         }/>
                         <Route path={"/books/edit/:id"} exact render={() =>
                             <BookEdit
@@ -123,10 +127,11 @@ class App extends Component {
             })
     }
 
-    addBookPrint = (name, price, quantity, category, manufacturer) => {
-        LibraryService.addBookPrint(name, price, quantity, category, manufacturer)
+    addBook = (name, price, quantity, category, manufacturer) => {
+        LibraryService.addBook(name, price, quantity, category, manufacturer)
             .then(() => {
                 this.loadBooks();
+                NotificationService.success('Success!', 'Book Print added successfully!')
             });
     }
 
@@ -134,6 +139,7 @@ class App extends Component {
         LibraryService.editBook(id, name, price, quantity, category, manufacturer)
             .then(() => {
                 this.loadBooks();
+                NotificationService.success('Success!', 'Book edited successfully!')
             });
     }
 
@@ -141,6 +147,7 @@ class App extends Component {
         LibraryService.markAsTakenBookPrint(id)
             .then(() => {
                 this.reloadSelected();
+                NotificationService.success('Success!', 'Book Print marked as taken successfully!')
             });
     }
 
@@ -148,6 +155,7 @@ class App extends Component {
         LibraryService.onMarkAsReturnedBookPrint(id)
             .then(() => {
                 this.reloadSelected();
+                NotificationService.success('Success!', 'Book Print marked as returned successfully!')
             });
     }
 
@@ -155,6 +163,7 @@ class App extends Component {
         LibraryService.deleteBookPrint(id)
             .then(() => {
                 this.reloadSelected();
+                NotificationService.warn('Warning!', 'Book Print deleted successfully!')
             });
     }
 
@@ -162,6 +171,7 @@ class App extends Component {
         LibraryService.addNewBookPrint(id)
             .then(() => {
                 this.reloadSelected();
+                NotificationService.success('Success!', 'Book Print added successfully!')
             });
     }
 
