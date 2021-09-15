@@ -62,6 +62,7 @@ class App extends Component {
                         <Route path={"/books"} exact render={() =>
                             <BooksList books={this.state.books}
                                        onEdit={this.getBook}
+                                       onDelete={this.deleteBook}
                                        onView={this.onViewGet}/>
                         }/>
                         <Redirect to={"/books"}/>
@@ -131,7 +132,10 @@ class App extends Component {
         LibraryService.addBook(name, price, quantity, category, manufacturer)
             .then(() => {
                 this.loadBooks();
-                NotificationService.success('Success!', 'Book Print added successfully!')
+                NotificationService.success('Success!', 'Book added successfully!')
+            })
+            .catch(error => {
+                NotificationService.danger('Error!', 'Book can not be added!');
             });
     }
 
@@ -140,6 +144,20 @@ class App extends Component {
             .then(() => {
                 this.loadBooks();
                 NotificationService.success('Success!', 'Book edited successfully!')
+            })
+            .catch(error => {
+                NotificationService.danger('Error!', 'Book can not be edited!');
+            });
+    }
+
+    deleteBook = (id) => {
+        LibraryService.deleteBook(id)
+            .then(() => {
+                this.loadBooks();
+                NotificationService.warn('Warning!', 'Book deleted successfully!')
+            })
+            .catch(error => {
+                NotificationService.danger('Error!', 'Book can not be deleted! Please check if all bookprints are returned!');
             });
     }
 
@@ -148,6 +166,9 @@ class App extends Component {
             .then(() => {
                 this.reloadSelected();
                 NotificationService.success('Success!', 'Book Print marked as taken successfully!')
+            })
+            .catch(error => {
+                NotificationService.danger('Error!', 'Book Print can not be marked as taken!');
             });
     }
 
@@ -156,6 +177,9 @@ class App extends Component {
             .then(() => {
                 this.reloadSelected();
                 NotificationService.success('Success!', 'Book Print marked as returned successfully!')
+            })
+            .catch(error => {
+                NotificationService.danger('Error!', 'Book Print can not be marked as returned!');
             });
     }
 
@@ -163,7 +187,10 @@ class App extends Component {
         LibraryService.deleteBookPrint(id)
             .then(() => {
                 this.reloadSelected();
-                NotificationService.warn('Warning!', 'Book Print deleted successfully!')
+                NotificationService.warn('Warning!', 'Book Print deleted successfully!');
+            })
+            .catch(error => {
+                NotificationService.danger('Error!', 'Book Print can not be deleted! Please check if the bookprint is returned!');
             });
     }
 
@@ -172,6 +199,9 @@ class App extends Component {
             .then(() => {
                 this.reloadSelected();
                 NotificationService.success('Success!', 'Book Print added successfully!')
+            })
+            .catch(error => {
+                NotificationService.danger('Error!', 'Book Print can not be added!');
             });
     }
 

@@ -15,15 +15,14 @@ const BookEdit = (props) => {
         updateFormData({
             ...formData,
             [e.target.name]: e.target.value.trim()
-        })
+        });
     }
 
     const onFormSubmit = (e) => {
         e.preventDefault();
-
         const name = formData.name !== "" ? formData.name : props.book.name;
         const category = formData.category !== -1 ? formData.category : props.book.category;
-        const author = formData.author !== -1 ? formData.author.id : props.book.author.id;
+        const author = formData.author !== -1 ? formData.author : props.book.author.id;
         const availableCopies = props.book.availableCopies;
 
         props.onEditBook(props.book.id, name, category, author, availableCopies);
@@ -31,7 +30,10 @@ const BookEdit = (props) => {
     }
 
     return (
-        <div className="row">
+        <div className="row book-edit">
+            <div className={"button-left"}>
+                <Link className={"btn btn-outline-primary"} to={"/books"}>Back</Link>
+            </div>
             <div className={"col-sm-12 m-4"}>
                 <h1>Edit Book</h1>
             </div>
@@ -49,29 +51,29 @@ const BookEdit = (props) => {
                     </div>
                     <div className="form-group">
                         <label>Category</label>
-                        <select name="category" className="form-control" onChange={handleChange}
+                        <select name="category" id="category" className="form-control" onChange={handleChange}
                                 defaultValue={props.book?.category}>
                             {props.categories.map((term, index) => {
-                                // if (props.book.category !== undefined &&
-                                //     props.book.category === term)
-                                //     return <option key={index} selected={props.book.category}
-                                //                    value={term}>{term}</option>
-                                // else
-                                return <option key={index} value={term}>{term}</option>
+                                if (props.book.category !== undefined &&
+                                    props.book.category === term)
+                                    return <option key={index} selected={props.book.category}
+                                                   value={term}>{term}</option>
+                                else
+                                    return <option key={index} value={term}>{term}</option>
                             })}
                         </select>
                     </div>
                     <div className="form-group">
                         <label>Author</label>
-                        <select name="author" className="form-control" onChange={handleChange}
+                        <select name="author" id="author" className="form-control" onChange={handleChange}
                                 defaultValue={props.book?.author?.id}>
                             {props.authors.map((term, index) => {
-                                // if (props.book.author !== undefined &&
-                                //     props.book.author.id === term.id)
-                                //     return <option key={index} selected={props.book.author.id}
-                                //                    value={term.id}>{term.name+' '+term.surname}</option>
-                                // else
-                                return <option key={index} value={term.id}>{term.name + ' ' + term.surname}</option>
+                                if (props.book.author !== undefined &&
+                                    props.book.author.id === term.id)
+                                    return <option key={index} selected={props.book.author.id}
+                                                   value={term.id}>{term.name + ' ' + term.surname}</option>
+                                else
+                                    return <option key={index} value={term.id}>{term.name + ' ' + term.surname}</option>
                             })}
                         </select>
                     </div>
@@ -81,12 +83,11 @@ const BookEdit = (props) => {
                                className="form-control"
                                id="availableCopies"
                                name="availableCopies"
-                               placeholder={props.book.availableCopies}
+                               value={props.book.availableCopies}
                                onChange={handleChange}
                                disabled
                         />
                     </div>
-                    <Link className={"btn btn-outline-primary float-left"} to={"/books"}>Back</Link>
                     <button id="submit" type="submit" className={"btn btn-primary float-right"}>Submit</button>
                 </form>
             </div>

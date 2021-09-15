@@ -17,6 +17,13 @@ form {
     z-index: 1001;
 }
 
+.button-left {
+    position: absolute;
+    top: 34px;
+    left: 0;
+    z-index: 1001;
+}
+
 .react-pagination-js-border-bottom {
     list-style: none;
     padding: 0 0 0 0;
@@ -55,3 +62,4 @@ form {
 .react-pagination-js-border-bottom li a:focus {
     outline: none;
 }
+

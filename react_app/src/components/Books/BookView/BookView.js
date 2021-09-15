@@ -22,12 +22,15 @@ class BookView extends React.Component {
         const bookPrintList = this.getBookPrintsPage(offset, nextPageOffset);
 
         return (
-            <div className="row">
+            <div className="row book-view">
                 <div className={"button-right"}>
                     <a className={"btn btn-outline-success"}
                        onClick={() => this.props.addNewBookPrint(this.props.book?.id)}>
                         Add New Book Print
                     </a>
+                </div>
+                <div className={"button-left"}>
+                    <Link className={"btn btn-outline-primary"} to={"/books"}>Back</Link>
                 </div>
                 <div className={"col-sm-12 m-4"}>
                     <h1>Book Info</h1>
@@ -80,11 +83,11 @@ class BookView extends React.Component {
                                    className="form-control"
                                    id="availableCopies"
                                    name="availableCopies"
-                                   placeholder={this.props.book.availableCopies}
+                                   // placeholder={this.props.book.availableCopies}
+                                   value={this.props.book.availableCopies}
                                    disabled
                             />
                         </div>
-                        <Link className={"btn btn-outline-primary float-left"} to={"/books"}>Back</Link>
                     </form>
                 </div>
                 <div className={"col-sm-12 mt-5"}>

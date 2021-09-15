@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,13 +27,14 @@ public class BookRestController {
 
     @GetMapping
     private List<Book> findAllBooks() {
-        return this.bookService.listBooks();
+        return this.bookService.listBooks().stream()
+                .sorted(Comparator.comparing(Book::getId))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/categories")
     public ResponseEntity<List<String>> getCategories() {
         System.out.println("-----------------------findBook-------------------------");
-
         return ResponseEntity.ok().body(Arrays.stream(CategoryType.values()).map(Enum::toString)
                 .collect(Collectors.toList()));
     }
@@ -40,7 +42,6 @@ public class BookRestController {
     @GetMapping("/{id}")
     public ResponseEntity<Book> findBook(@PathVariable Long id) {
         System.out.println("-----------------------findBook-------------------------");
-
         return this.bookService.findBook(id)
                 .map(book -> {
                     System.out.println("-----------------------findBook-------------------------");
@@ -53,7 +54,6 @@ public class BookRestController {
     @GetMapping("/print/{id}")
     public List<BookPrint> findBookPrints(@PathVariable Long id) {
         System.out.println("-----------------------findBookPrints-------------------------");
-
         return this.bookService.listBookPrintsByBook(id);
     }
 
@@ -75,6 +75,14 @@ public class BookRestController {
     }
 
     @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteBook(@PathVariable Long id) {
+        System.out.println("-----------------------deleteBook-------------------------");
+        this.bookService.deleteBook(id);
+        if (this.bookService.findBook(id).isEmpty()) return ResponseEntity.ok().build();
+        return ResponseEntity.badRequest().build();
+    }
+
+    @DeleteMapping("/delete/bookprint/{id}")
     public ResponseEntity deleteBookPrint(@PathVariable Long id) {
         System.out.println("-----------------------deleteBookPrint-------------------------");
         this.bookService.deleteBookPrint(id);

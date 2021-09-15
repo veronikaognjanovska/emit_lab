@@ -2,7 +2,7 @@ import React from 'react';
 
 const Categories = (props) => {
     return (
-        <div className={"row"}>
+        <div className={"row categories"}>
             <div className={"col-sm-12 m-4"}>
                 <h1>List of Categories</h1>
             </div>

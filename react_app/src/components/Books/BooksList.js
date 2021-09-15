@@ -10,7 +10,7 @@ class BooksList extends React.Component {
         super(props);
         this.state = {
             page: 0,
-            size: 5
+            size: 2
         }
     }
 
@@ -21,9 +21,9 @@ class BooksList extends React.Component {
         const bookList = this.getBooksPage(offset, nextPageOffset);
 
         return (
-            <div className={"row"}>
+            <div className={"row books"}>
                 <div className={"button-right"}>
-                    <Link className={"btn btn-outline-success"} to={"/books/add"}>Add New Book</Link>
+                    <Link className={"btn btn-outline-success add-btn"} to={"/books/add"}>Add New Book</Link>
                 </div>
                 <div className={"col-sm-12 m-4"}>
                     <h1>List of Books</h1>
@@ -81,7 +81,8 @@ class BooksList extends React.Component {
     getBooksPage = (offset, nextPageOffset) => {
         return this.props.books.map((term, index) => {
             return (
-                <BookComponent key={index} term={term} onEdit={this.props.onEdit} onView={this.props.onView}/>
+                <BookComponent key={index} term={term} onEdit={this.props.onEdit} onView={this.props.onView}
+                               onDeleteBook={this.props.onDelete}/>
             );
         }).filter((book, index) => {
             return index >= offset && index < nextPageOffset;

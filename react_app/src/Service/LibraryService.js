@@ -32,8 +32,12 @@ const LibraryService = {
         });
     },
 
-    deleteBookPrint: (id) => {
+    deleteBook: (id) => {
         return axios.delete(`/books/delete/${id}`);
+    },
+
+    deleteBookPrint: (id) => {
+        return axios.delete(`/books/delete/bookprint/${id}`);
     },
 
     addNewBookPrint: (id) => {

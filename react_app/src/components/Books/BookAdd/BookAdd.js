@@ -24,12 +24,15 @@ const BookAdd = (props) => {
         const category = formData.category;
         const author = formData.author;
         const availableCopies = formData.availableCopies;
-        props.addBookPrint(name, category, author, availableCopies);
+        props.addBook(name, category, author, availableCopies);
         history.push("/books");
     }
 
     return (
-        <div className="row">
+        <div className="row book-add">
+            <div className={"button-left"}>
+                <Link className={"btn btn-outline-primary"} to={"/books"}>Back</Link>
+            </div>
             <div className={"col-sm-12 m-4"}>
                 <h1>Add Book</h1>
             </div>
@@ -48,7 +51,7 @@ const BookAdd = (props) => {
                     </div>
                     <div className="form-group">
                         <label>Category</label>
-                        <select name="category" className="form-control" onChange={handleChange}
+                        <select name="category" id="category" className="form-control" onChange={handleChange}
                             // defaultValue={props.categories[3]}
                                 required>
                             <option value="" selected disabled hidden>Choose here</option>
@@ -59,7 +62,7 @@ const BookAdd = (props) => {
                     </div>
                     <div className="form-group">
                         <label>Author</label>
-                        <select name="author" className="form-control" onChange={handleChange}
+                        <select name="author" id="author" className="form-control" onChange={handleChange}
                             // defaultValue={props.authors[0]}
                                 required>
                             <option value="" selected disabled hidden>Choose here</option>
@@ -79,7 +82,6 @@ const BookAdd = (props) => {
                                onChange={handleChange}
                         />
                     </div>
-                    <Link className={"btn btn-outline-primary float-left"} to={"/books"}>Back</Link>
                     <button id="submit" type="submit" className={"btn btn-primary float-right"}>Submit</button>
                 </form>
             </div>

@@ -16,7 +16,7 @@ const BookPrintComponent = (props) => {
                 }
                 {
                     props.term.status === "TAKEN" &&
-                    <a className={"btn btn-outline-info"}
+                    <a className={"btn btn-info"}
                        onClick={() => props.onMarkAsReturned(props.term.id)}>
                         Mark As Returned
                     </a>

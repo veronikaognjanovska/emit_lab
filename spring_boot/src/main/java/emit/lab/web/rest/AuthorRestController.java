@@ -24,14 +24,12 @@ public class AuthorRestController {
     @GetMapping
     private List<Author> findAllAuthors() {
         System.out.println("-----------------------findAllAuthors-------------------------");
-
         return this.authorService.listAuthors();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Author> findBook(@PathVariable Long id) {
         System.out.println("-----------------------findAuthor-------------------------");
-
         return this.authorService.findAuthorById(id)
                 .map(author -> ResponseEntity.ok().body(author))
                 .orElseGet(() -> ResponseEntity.notFound().build());

@@ -100,6 +100,19 @@ public class BookService {
         this.setAvailableCopies(book, -1);
     }
 
+    @Transactional
+    public void deleteBook(Long id) throws NotFound {
+        Book book = this.findBook(id).orElseThrow(() -> new NotFound(String.format("Book with id: %d not found!", id)));
+        List<BookPrint> bookPrintList = this.listBookPrintsByBook(id);
+        for (BookPrint bookPrint : bookPrintList) {
+            this.deleteBookPrint(bookPrint.getId());
+        }
+        if (book.getAvailableCopies() > 0) {
+            throw new CanNotCompleteActionException("Book can not be deleted!");
+        }
+        this.bookRepository.delete(book);
+    }
+
     //- Да изменува одреден запис за книга
     public Optional<Book> editBook(Long book_id, BookDto bookDto) throws NotFound {
         Book book = this.findBook(book_id).orElseThrow(() -> new NotFound(String.format("Book with id: %d not found!", book_id)));
@@ -117,12 +130,10 @@ public class BookService {
             throws IllegalArgumentException, NotFound, CanNotCompleteActionException {
 
         BookPrint bookPrint = this.bookPrintRepository.findById(print_id).orElseThrow(() -> new NotFound(String.format("BookPrint with id: %d not found!", print_id)));
-
         bookPrint.setStatus(BookPrintStatus.TAKEN);
         Book book = bookPrint.getBook();
         this.setAvailableCopies(book, -1);
         this.bookRepository.save(book);
-
         return Optional.of(this.bookPrintRepository.save(bookPrint));
     }
 
